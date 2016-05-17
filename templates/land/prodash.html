@@ -1,0 +1,220 @@
+<html>
+<head>
+  <script src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+  <!-- Latest compiled and minified JavaScript -->
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+  <link href='https://fonts.googleapis.com/css?family=Ubuntu' rel='stylesheet' type='text/css'>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <style>
+  body{
+    font-family: 'Ubuntu', sans-serif;
+    font-weight: 400;
+    background-color: #FCFCFC;
+    color: #3D3E3D;
+  }
+
+  div.namespace{
+    background-color: #EA843C;
+    color: #FCFCFC;
+    height: 35%;
+    min-height: 175px;
+    padding-top: 2%;
+    padding-left: 5%;
+  }
+  div.listsnot{
+    background-color: #B3CD86;
+    color: #3D3E3D;
+    height: 35%;
+    min-height: 175px;
+  }
+  div.listsclubs{
+    text-align: center;
+    background-color: #96B157;
+    color: #3D3E3D;
+    min-height: 65%;
+  }
+  div.recstory{
+    background-color: #FCFCFC;
+    color: #3D3E3D;
+    min-height: 65%;
+  }
+  @media (max-width: 768px) {
+    .namespace {
+      margin-top: auto;
+      padding-top: 2%;
+      padding-left: 5%;
+      margin-bottom: -10px;
+    }
+    .listsclubs {
+      margin-top: auto;
+      padding-top: 1px;
+      margin-bottom: -10px;
+    }
+    .listsnot {
+      margin-top: 0px;
+      padding-top: 2px;
+      margin-bottom: -10px;
+      padding-bottom: 20px;
+    }
+    .recstory {
+      margin-top: 0px;
+      padding-top: 5px;
+      margin-bottom: -10px;
+      padding-bottom: 20px;
+    }
+  }
+  a.clublink{
+    color: #FCFCFC;
+    font-size: 20px;
+    font-weight: bold;
+  }
+  .btn-main{
+    background-color: #FCFCFC;
+    border: solid 1px #EA843C;
+    color: #EA843C;
+    font-size: 18px;
+    min-width: 50%;
+  }
+  .btn-main:hover {
+    background-color: #EA843C;
+    border: solid 1px #EA843C;
+    color: #FCFCFC;
+    font-size: 18px;
+    min-width: 50%;
+  }
+  div.clubbuttons{
+    text-align: center;
+  }
+  div.modal-content{
+    text-align: center;
+  }
+  ul.notifications{
+    color: #FCFCFC;
+    list-style-type: none;
+  }
+  a.notifications{
+    color: #FCFCFC;
+    font-weight: bold;
+    font-size: 15px;
+  }
+  a.notifications:hover {
+    color: #FCFCFC;
+    font-weight: normal;
+    font-size: 15px;
+  }
+  a.new{
+    color: #EA843C;
+  }
+  </style>
+</head>
+<body>
+  <div class="container-fluid">
+    <div class="row">
+    <div class="col-sm-4 namespace">
+      <h1 class="namespace">Hello,</h3>
+      <h3 class="namespace">{{ user.username }}</h5>
+    </div>
+    <div class="col-sm-8 listsnot">
+      <h3>Updates:</h3>
+      <ul class="notifications">
+        {% for noti in notifications %}
+        <li><a class="notifications{% if noti.seen < 2 %} new{% endif %}" href="/post/{{ noti.post.pk }}">
+          {{ noti.user_sent }} {{ noti.notification }} {{ noti.post.title }}.
+        </a></li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-4 listsclubs">
+      <h2>Clubs:</h2>
+      {% for club in clubs %}
+        <a class="clublink" href="/grodash/{{ club.club.pk }}">
+            {{ club.club.name }}
+        </a><br>
+        {% endfor %}
+        <br>
+        <div class="clubbuttons">
+        <button class="btn-main" type="button" data-toggle="modal" data-target=".createclub">Create Club</button><br><br>
+        <button class="btn-main" type="button" data-toggle="modal" data-target=".joinclub">Join Club</button>
+      </div>
+    </div>
+    <div class="col-sm-8 recstory">
+      <h3>Most Recent Story:</h3>
+      <h4>Club: None</h4>
+      <h5>Author: daniel</h5>
+      <p>This feature is coming soon</p>
+    </div>
+  </div>
+  </div>
+  <!-- Modals for creating and joining Clubs -->
+<div class="modal fade createclub">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="container">
+        <div class="col-sm-12">
+          <h2>Create a New Club</h2>
+          <form id="createclub">
+            {% csrf_token %}
+            <input type="text" name="name" placeholder="Club Name"></br></br>
+            <input type="text" name="tagline" placeholder="Club Tagline"></br></br>
+            <input type="text" name="password" placeholder="Club Password"></br></br>
+            <input type="submit" class="btn btn-main" value="Create" /></br>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade joinclub" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="container">
+        <div class="col-sm-12">
+          <h2>Join Club</h2>
+          <form id="joinclub">
+            {% csrf_token %}
+            <input type="text" name="clubname" placeholder="Club Name"></br></br>
+            <input type="password" name="password" placeholder="Club Password"></br></br>
+            <input type="submit" class="btn btn-main" value="Join Club" /></br>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <script>
+    $(function(){
+        $('#createclub').on('submit', function(e){
+            e.preventDefault();
+            $.ajax({
+                url: '/creategroup/',
+                type: 'POST',
+                data: $('#createclub').serialize(),
+                success: function(data){
+                  window.location.replace("/prodash/");
+                }
+            });
+        });
+    });
+    $(function(){
+        $('#joinclub').on('submit', function(e){
+            e.preventDefault();
+            $.ajax({
+                url: '/joingroup/',
+                type: 'POST',
+                data: $('#joinclub').serialize(),
+                success: function(data){
+                  window.location.replace("/prodash/");
+                }
+            });
+        });
+    });
+</script>
+</body>
+</html>
+
